@@ -1,14 +1,14 @@
 # vizzy-youtube-demo
 
-Standalone full-stack SvelteKit demo of a direct YouTube Data API v3 + YouTube
-Analytics API integration. Built for Vizzy's long-term monitoring use case
-and as the YouTube counterpart to `vizzy-tiktok-demo`.
+SvelteKit demo of two YouTube data paths: **Path A** (API key, public data on
+any channel) and **Path B** (OAuth, private Analytics on the connected
+creator's own channel).
+
+YouTube counterpart to `vizzy-tiktok-demo`.
 
 ---
 
 ## What this demo does
-
-Two parallel paths, each exercised end-to-end:
 
 **Path A — Public (API key only)**
 1. Paste any YouTube video URL → `videos.list` → snippet + statistics + contentDetails.
