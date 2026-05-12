@@ -1,5 +1,14 @@
 import { randomBytes } from 'node:crypto';
 import type { Cookies } from '@sveltejs/kit';
+import { GOOGLE_REDIRECT_ORIGIN } from '$env/static/private';
+
+/**
+ * Cookies marked Secure cannot be set over plain HTTP. Local dev runs on
+ * http://localhost; production (Vercel etc.) runs on HTTPS. We derive this
+ * from GOOGLE_REDIRECT_ORIGIN, which is already configured to match the
+ * deployment URL.
+ */
+const SECURE_COOKIES = GOOGLE_REDIRECT_ORIGIN.startsWith('https://');
 
 /**
  * In-memory token store for the YouTube demo.
@@ -49,9 +58,7 @@ export function setSessionCookie(cookies: Cookies, sessionId: string): void {
     path: '/',
     httpOnly: true,
     sameSite: 'lax',
-    // Local dev uses http://localhost — Secure: true would prevent the cookie
-    // from being set. Flip to true once deployed behind HTTPS.
-    secure: false,
+    secure: SECURE_COOKIES,
     maxAge: 60 * 60 * 24 * 30,
   });
 }
@@ -69,7 +76,7 @@ export function setOAuthStateCookie(cookies: Cookies, state: string): void {
     path: '/',
     httpOnly: true,
     sameSite: 'lax',
-    secure: false,
+    secure: SECURE_COOKIES,
     maxAge: STATE_TTL_SECONDS,
   });
 }
