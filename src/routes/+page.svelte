@@ -125,10 +125,6 @@
 	<!-- =================== Path A: public, API key =================== -->
 	<section>
 		<h2>Path A — Public (API Key)</h2>
-		<p class="hint">
-			No OAuth required. Works on any public YouTube video / channel. Demonstrates that YouTube
-			monitoring of unsigned creators is feasible — something TikTok's Display API cannot do.
-		</p>
 
 		<div class="row">
 			<input
@@ -182,11 +178,6 @@
 		<h2>Path B — Connected creator (OAuth + Analytics)</h2>
 
 		{#if !connected}
-			<p class="hint">
-				Connect a Google account that has a YouTube channel. The OAuth grant unlocks private
-				Analytics (watch time, retention, audience demographics) — data that no public API call can
-				return.
-			</p>
 			<button class="primary" onclick={connect}>Connect YouTube</button>
 		{:else}
 			<div class="status">
@@ -290,12 +281,6 @@
 		</section>
 	{/if}
 
-	<footer>
-		<p class="muted">
-			Server holds <code>client_secret</code>, <code>access_token</code>, and
-			<code>refresh_token</code>; browser only ever sees an opaque <code>yt_sid</code> cookie.
-		</p>
-	</footer>
 </main>
 
 <style>
@@ -329,11 +314,6 @@
 	section h2 {
 		margin: 0 0 0.5rem;
 		font-size: 1.1rem;
-	}
-	.hint {
-		margin: 0 0 0.75rem;
-		color: #8c8c93;
-		font-size: 0.9rem;
 	}
 	.row {
 		display: flex;
@@ -427,14 +407,5 @@
 		width: 100%;
 		height: 100%;
 		border: 0;
-	}
-	footer {
-		margin-top: 1.5rem;
-		font-size: 0.85rem;
-	}
-	code {
-		background: #1f1f26;
-		padding: 0 0.25rem;
-		border-radius: 4px;
 	}
 </style>
