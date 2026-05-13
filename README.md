@@ -8,6 +8,39 @@ YouTube counterpart to `vizzy-tiktok-demo`.
 
 ---
 
+## YouTube APIs used
+
+This demo calls two distinct YouTube API products. They serve different
+purposes and have different access models.
+
+### YouTube Data API v3
+The entity API — manages videos, channels, playlists, comments. Returns
+JSON objects describing **"what" content exists**. Public data (any channel's
+view counts, titles, statistics) is readable with an **API key**; private
+data (own unlisted videos, write operations) requires **OAuth**. Powers
+Path A in full and the channel/uploads calls in Path B.
+
+Endpoints used: `videos.list`, `channels.list`, `playlistItems.list`.
+
+### YouTube Analytics API v2
+The reporting API — returns aggregated time-series metrics:
+**"how content performed."** Watch time, retention curves, audience
+demographics, traffic sources. Always requires **OAuth** and can only return
+data for the connected creator's own channel. Aggregated with a 1-3 day
+delay vs. real-time counts. Powers the Analytics buttons in Path B.
+
+Endpoint used: `reports.query`.
+
+|  | Data API v3 | Analytics API v2 |
+|---|---|---|
+| Returns | Entities (videos, channels, playlists) | Aggregated metrics (views, watch time, retention) |
+| Auth | API key **or** OAuth | OAuth only |
+| Whose data | Anyone's public + own private | **Own channel only** |
+| Latency | Real-time | 1-3 day aggregation |
+| Used by | Path A (all) + Path B (channel, videos) | Path B (Analytics buttons only) |
+
+---
+
 ## What this demo does
 
 **Path A — Public (API key only)**
@@ -149,20 +182,6 @@ inspected end-to-end with a real channel.
 | Retention curve (`audienceWatchRatio`) | ❌ | ✅ | Per-video, per video-time-decile |
 | Traffic source breakdown | ❌ | ✅ | |
 | Revenue / RPM | ❌ | ⚠️ Needs `yt-analytics-monetary.readonly` (not in this demo's scopes) | |
-
----
-
-## Troubleshooting
-
-| Symptom | Cause / Fix |
-|---|---|
-| OAuth consent screen says "Access blocked: This app is not verified" | The Google account you're signing in with is not on the Test users list. Add it in Google Auth Platform → 目标对象. |
-| `redirect_uri_mismatch` | The redirect URI in the OAuth client config must EXACTLY match `${GOOGLE_REDIRECT_ORIGIN}/api/youtube/auth/callback`. Trailing slash, port, and scheme all matter. |
-| `403 accessNotConfigured` | The relevant API isn't enabled on the Cloud project (Data API v3 for Path A, Analytics API for Path B). |
-| Path B works but `analytics/report` returns empty `rows: []` | The channel has too little activity in the requested window. Widen the date range or use an older channel. |
-| `quotaExceeded` | Default daily quota is 10,000 units. Don't use `search.list` (100 u/call); the demo deliberately avoids it. |
-| Refresh button returns `no_refresh_token` | Google withholds `refresh_token` if the user has previously consented and `prompt=consent` wasn't sent. The demo always sends it, but if you somehow got into this state: logout, then connect again. |
-| `keyInvalid` on Path A | API key was restricted to a different API. Loosen API restrictions in Cloud Console → Credentials. |
 
 ---
 
